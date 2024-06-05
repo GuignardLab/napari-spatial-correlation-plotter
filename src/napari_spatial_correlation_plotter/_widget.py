@@ -496,7 +496,6 @@ class PlotterWidget(Container):
         self.id=0
 
     def manual_clustering_method(self, inside):
-        # return
 
         inside = np.array(inside)  # leads to errors sometimes otherwise
 
@@ -551,7 +550,7 @@ class PlotterWidget(Container):
             self.quantityX_smoothed_layer is None or \
             self.quantityX_smoothed_layer not in self._viewer.layers
         ):
-            self.quantityX_smoothed_layer = viewer.add_image(
+            self.quantityX_smoothed_layer = self._viewer.add_image(
                 blurred_X,
                 colormap=self.quantityX_layer_combo.value.colormap
             )
@@ -562,7 +561,7 @@ class PlotterWidget(Container):
             self.quantityY_smoothed_layer is None or \
             self.quantityY_smoothed_layer not in self._viewer.layers
         ):
-            self.quantityY_smoothed_layer = viewer.add_image(
+            self.quantityY_smoothed_layer = self._viewer.add_image(
                 blurred_Y,
                 colormap=self.quantityX_layer_combo.value.colormap
             )
@@ -863,8 +862,7 @@ class PlotterWidget(Container):
         labels_layer = self.labels_layer_combo.value
         # self.graphics_widget.reset()
     
-        # fill all prediction nan values with -1 -> turns them
-        # into noise points
+        # fill all prediction nan values with -1
         self.cluster_ids = features[plot_cluster_name].fillna(-1)
 
         # get long colormap from function
@@ -993,7 +991,7 @@ if __name__ == "__main__":
 
     mask_layer = viewer.add_image(mask)
     image_layer = viewer.add_image(data)
-    image_layer2 = viewer.add_image(scipy.ndimage.gaussian_filter(data,10))
+    image_layer2 = viewer.add_image(scipy.ndimage.gaussian_filter(data,5))
     labels_layer = viewer.add_labels(labels)
 
     widget = PlotterWidget(viewer)
