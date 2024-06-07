@@ -600,6 +600,12 @@ class PlotterWidget(Container):
             self.labels_image = self.labels_layer_combo.value.data
         else:
             self.labels_image = None
+            if self.mask is not None:
+                self.argwheres = np.argwhere(self.mask)
+            else:
+                shape = self.quantityX.shape
+                # use np.mgrid
+                self.argwheres = np.mgrid[0:shape[0], 0:shape[1], 0:shape[2]].reshape(3, -1).T
 
         # Blur the layers
         smoothedX, smoothedY = self._smooth_quantities(
@@ -837,7 +843,7 @@ class PlotterWidget(Container):
             labelY = quantityY_label
 
         # Get figure from HeatmapPlotter
-        figure, _, sampling_indices = self.heatmap_plotter.get_heatmap_figure(
+        figure, _ = self.heatmap_plotter.get_heatmap_figure(
             bins=(self.heatmap_binsX.value, self.heatmap_binsY.value),
             show_individual_cells=self.show_individual_cells_checkbox.value,
             show_linear_fit=self.show_linear_fit_checkbox.value,
@@ -848,8 +854,6 @@ class PlotterWidget(Container):
             label_X=labelX,
             label_Y=labelY,
         )
-
-        self.sampling_indices = sampling_indices
 
         # Display figure in graphics_widget
         self.plot_heatmap(figure)
@@ -901,7 +905,7 @@ class PlotterWidget(Container):
             labelY = self.quantityY_labels_choice if self.quantityY_is_labels else self.quantityY_label
             
             # Get figure from HeatmapPlotter
-            figure, _, sampling_indices = self.heatmap_plotter.get_heatmap_figure(
+            figure, _ = self.heatmap_plotter.get_heatmap_figure(
                 bins=(self.heatmap_binsX.value, self.heatmap_binsY.value),
                 show_individual_cells=self.show_individual_cells_checkbox.value,
                 show_linear_fit=self.show_linear_fit_checkbox.value,
@@ -912,8 +916,6 @@ class PlotterWidget(Container):
                 label_X=labelX,
                 label_Y=labelY,
             )
-
-            self.sampling_indices = sampling_indices
 
             # Display figure in graphics_widget -> Create a method "self.plot"
             self.plot_heatmap(figure)
@@ -943,8 +945,8 @@ class PlotterWidget(Container):
         """
 
         # self.analysed_layer = self.labels_select.value
-        labels_layer = self.labels_layer_combo.value
-        mask_layer = self.mask_layer_combo.value
+        # labels_layer = self.labels_layer_combo.value
+        # mask_layer = self.mask_layer_combo.value
         # self.graphics_widget.reset()
     
         # fill all prediction nan values with -1
@@ -981,20 +983,18 @@ class PlotterWidget(Container):
         keep_selection = list(self._viewer.layers.selection)
 
 
-        if labels_layer is not None:
+        if self.labels_image is not None:
             cluster_image = self.generate_cluster_image_from_labels(
-                labels_layer.data, self.cluster_ids
+                self.labels_image, self.cluster_ids
             )
         
-        elif mask_layer is not None:
+        elif self.mask is not None:
             cluster_image = self.generate_cluster_image_from_points(
-                mask_layer.data, self.cluster_ids, shape=mask_layer.data.shape,
-                sampling_indices=self.sampling_indices
+                self.argwheres, self.cluster_ids, shape=self.quantityX.shape,
             )
         else:
             cluster_image = self.generate_cluster_image_from_points(
-                None, self.cluster_ids, shape=self.quantityX_layer_combo.value.data.shape,
-                sampling_indices=self.sampling_indices
+                self.argwheres, self.cluster_ids, shape=self.quantityX_layer_combo.value.data.shape,
             )
 
         # if the cluster image layer doesn't yet exist make it
@@ -1035,19 +1035,12 @@ class PlotterWidget(Container):
 
         return cluster_image
     
-    def generate_cluster_image_from_points(self, mask, predictionlist, shape, sampling_indices):
-
-        print(len(sampling_indices))
-
+    def generate_cluster_image_from_points(self, argwheres, predictionlist, shape):
 
         cluster_image = np.zeros(shape, dtype='uint8')
 
         t0 = time()
-        if mask is not None:
-            argwheres = np.argwhere(mask)
-        else:
-            # use np.mgrid
-            argwheres = np.mgrid[0:shape[0], 0:shape[1], 0:shape[2]].reshape(3, -1).T
+        argwheres = argwheres
         print('argwhere time:', time()-t0)
         # if sampling_indices is not None:
         #     argwheres = argwheres[sampling_indices]
