@@ -1025,13 +1025,12 @@ class PlotterWidget(Container):
 
         cluster_image = np.zeros(label_image.shape, dtype='uint8')
 
-        for i, (prop, pred) in enumerate(zip(props, predictionlist)):
-            if pred > 0:
-                prop_slice = prop.slice
+        argwheres = np.argwhere(predictionlist>0)
 
-                roi_data = label_image[prop_slice]
-
-                cluster_image[prop_slice][roi_data==prop.label] = pred+1
+        for index in argwheres:
+            prop = props[index]
+            roi_data = label_image[prop.slice]
+            cluster_image[prop.slice][roi_data==prop.label] = predictionlist[index]+1
 
         return cluster_image
     
