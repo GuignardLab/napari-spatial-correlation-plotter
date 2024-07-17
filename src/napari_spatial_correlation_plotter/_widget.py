@@ -1,10 +1,9 @@
-
 import os
 import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path as PathL
-from magicgui.widgets import Container, create_widget
+from magicgui.widgets import Container, create_widget, EmptyWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -28,7 +27,6 @@ ICON_ROOT = PathL(__file__).parent / "icons"
 
 # TODO:
 # - add log scale to heatmap colors
-# - remove timing code
 
 
 
@@ -65,7 +63,7 @@ class SelectFromCollection:
         alpha value of 1 and non-selected points to *alpha_other*.
     """
 
-    def __init__(self, parent, ax, collection, xys, alpha_other=0.3):
+    def __init__(self, parent, ax, xys, alpha_other=0.3):
         self.canvas = ax.figure.canvas
         self.parent = parent
         # self.collection = collection
@@ -84,17 +82,13 @@ class SelectFromCollection:
         min_x, min_y = np.min(verts, axis=0)
         max_x, max_y = np.max(verts, axis=0)
 
-        t0 = time()
         ind_mask = in_bbox(min_x, max_x, min_y, max_y, self.xys)
-        print('bbox time:', time()-t0)
 
-        t0 = time()
         path = Path(verts)
         # ind_mask = np.where(
         #     ind_mask, path.contains_points(self.xys[ind_mask]), False
         # )
         ind_mask[ind_mask] = path.contains_points(self.xys[ind_mask])
-        print('contains_points time:', time()-t0)
         self.ind_mask = ind_mask
 
 
@@ -179,7 +173,7 @@ class MplCanvas(FigureCanvas):
             plt.setp(plt.getp(cb.ax.axes, 'yticklabels'), color="white")
 
         if create_selectors:
-            self.selector = SelectFromCollection(self, self.axes, self.pts, xys)
+            self.selector = SelectFromCollection(self, self.axes, xys)
             # Rectangle
             self.rectangle_selector = RectangleSelector(
                 self.axes,
@@ -198,21 +192,12 @@ class MplCanvas(FigureCanvas):
         """eclick and erelease are the press and release events"""
         x0, y0 = eclick.xdata, eclick.ydata
         x1, y1 = erelease.xdata, erelease.ydata
-        # self.xys = self.pts.get_offsets()
         min_x = min(x0, x1)
         max_x = max(x0, x1)
         min_y = min(y0, y1)
         max_y = max(y0, y1)
-        # self.rect_ind_mask = [
-        #     min_x <= x <= max_x and min_y <= y <= max_y
-        #     for x, y in zip(self.xys[:, 0], self.xys[:, 1])
-        # ]
-        # use numpy instead to create self.rect_ind_mask
 
-        t0 = time()
         self.rect_ind_mask = in_bbox(min_x, max_x, min_y, max_y, self.xys)
-
-        print('logical_and on xys time:', time()-t0)
 
         if self.manual_clustering_method is not None:
             self.manual_clustering_method(self.rect_ind_mask)
@@ -368,7 +353,7 @@ class PlotterWidget(Container):
             )
 
             self.quantityX_layer_combo = create_widget(
-                annotation=Layer, label="quantityX_layer",
+                annotation=Layer, label="Quantity X",
                 options={'choices': self._image_labels_layers_filter}
             )
 
@@ -386,10 +371,8 @@ class PlotterWidget(Container):
                 layout='horizontal'
             )
 
-            
-
             self.quantityY_layer_combo = create_widget(
-                annotation=Layer, label="quantityY_layer",
+                annotation=Layer, label="Quantity Y",
                 options={'choices': self._image_labels_layers_filter}
             )
 
@@ -422,16 +405,9 @@ class PlotterWidget(Container):
                 options={'min':0, 'max':50, 'value':1}
             )
 
-            self.sample_fraction_slider = create_widget(
-                widget_type="LogSlider", label="Sample fraction",
-                options={'min':1e-3, 'max':1, 'value':1e-2}
-            )
-
-            self.sample_fraction_slider.changed.connect(lambda x: print(self.sample_fraction_slider.value))
-
             # self.blur_sigma_slider.changed.connect(self.sigma_changed)
             self.run_button = create_widget(
-                widget_type="PushButton", label="Run",
+                widget_type="PushButton", label="Compute correlation heatmap",
             )
 
             self.run_button.clicked.connect(self.run)
@@ -454,11 +430,24 @@ class PlotterWidget(Container):
 
             self.normalize_quantities_checkbox.changed.connect(self.parameters_changed)
 
-            self.options_container = Container(
+            self.display_quadrants = create_widget(
+                annotation=bool, label="Display quadrants",
+            )    
+
+            self.display_quadrants.changed.connect(self.parameters_changed)
+
+            self.options_container1 = Container(
                 widgets=[
                     self.show_individual_cells_checkbox,
                     self.show_linear_fit_checkbox,
+                ],
+                labels=False,
+                layout='horizontal'
+            )
+            self.options_container2 = Container(
+                widgets=[
                     self.normalize_quantities_checkbox,
+                    self.display_quadrants,
                 ],
                 labels=False,
                 layout='horizontal'
@@ -466,14 +455,14 @@ class PlotterWidget(Container):
 
             self.heatmap_binsX = create_widget(
                 widget_type="IntSlider", label="X",
-                value=20, options={'min':2, 'max':100, 'tracking': False}
+                value=20, options={'min':2, 'max':100, 'tracking': True}
             )
 
             self.heatmap_binsX.changed.connect(self.parameters_changed)
 
             self.heatmap_binsY = create_widget(
                 widget_type="IntSlider", label="Y",
-                value=20, options={'min':2, 'max':100, 'tracking': False}
+                value=20, options={'min':2, 'max':100, 'tracking': True}
             )
 
             self.heatmap_binsY.changed.connect(self.parameters_changed)
@@ -484,20 +473,20 @@ class PlotterWidget(Container):
                     self.heatmap_binsY,
                 ],
                 labels=True,
-                label='heatmap bins',
+                label='Heatmap bins',
                 layout='horizontal'
             )
 
             self.percentilesX = create_widget(
                 widget_type="FloatRangeSlider", label="X",
-                options={'min':0, 'max':100, 'value':[0,100], 'tracking': False}
+                options={'min':0, 'max':100, 'value':[0,100], 'tracking': True}
             )
 
             self.percentilesX.changed.connect(self.parameters_changed)
 
             self.percentilesY = create_widget(
                 widget_type="FloatRangeSlider", label="Y",
-                options={'min':0, 'max':100, 'value':[0,100], 'tracking': False}
+                options={'min':0, 'max':100, 'value':[0,100], 'tracking': True}
             )
 
             self.percentilesY.changed.connect(self.parameters_changed)
@@ -512,26 +501,25 @@ class PlotterWidget(Container):
                 layout='horizontal'
             )
 
-            self.test_button = create_widget(
-                widget_type="PushButton", label="Test",
-            )
-            self.test_value=False
-            self.test_button.clicked.connect(self.test_function)
+            parameters_text = EmptyWidget(label='<u>Parameters:</u>')
+
+            display_parameters_text = EmptyWidget(label='<u>Display Parameters:</u>')
 
             self.extend(
                 [
+                    parameters_text,
                     self.quantityX_layer_combo,
                     self.quantityY_layer_combo,
                     self.mask_layer_combo,
                     self.labels_layer_combo,
                     self.blur_sigma_slider,
-                    # self.sample_fraction_slider,
                     self.run_button,
                     self.graph_container,
-                    self.options_container,
+                    display_parameters_text,
+                    self.options_container1,
+                    self.options_container2,
                     self.heatmap_bins_container,
                     self.percentiles_container,
-                    self.test_button,
                 ]
             )
 
@@ -564,10 +552,6 @@ class PlotterWidget(Container):
             plot_cluster_name=clustering_ID,
         )
 
-        
-
-    def test_function(self):
-        print(self.test_value)
 
     def run(self):
         # Check if all necessary layers are specified
@@ -577,7 +561,10 @@ class PlotterWidget(Container):
         else:
             self.quantityX = self.quantityX_layer_combo.value.data
             self.quantityX_label = self.quantityX_layer_combo.value.name
-            self.quantityX_colormap = self.quantityX_layer_combo.value.colormap
+            if isinstance(self.quantityX_layer_combo.value, Labels):
+                self.quantityX_colormap = 'inferno'
+            else:
+                self.quantityX_colormap = self.quantityX_layer_combo.value.colormap
             self.quantityX_is_labels = isinstance(self.quantityX_layer_combo.value, Labels)
             self.quantityX_labels_choice = self.quantityX_labels_choices_combo.value
 
@@ -587,7 +574,10 @@ class PlotterWidget(Container):
         else:
             self.quantityY = self.quantityY_layer_combo.value.data
             self.quantityY_label = self.quantityY_layer_combo.value.name
-            self.quantityY_colormap = self.quantityY_layer_combo.value.colormap
+            if isinstance(self.quantityY_layer_combo.value, Labels):
+                self.quantityY_colormap = 'inferno'
+            else:
+                self.quantityY_colormap = self.quantityY_layer_combo.value.colormap
             self.quantityY_is_labels = isinstance(self.quantityY_layer_combo.value, Labels)
             self.quantityY_labels_choice = self.quantityY_labels_choices_combo.value
 
@@ -688,25 +678,6 @@ class PlotterWidget(Container):
                 self.quantityY_labels_choices_displayed = False
             
     
-    # def _smooth_parallel_func(
-    #         self, 
-    #         input, 
-    #         is_temporal,
-    #         dim_space,
-    #         sigmas,
-    #         n_job
-    #     ):
-    #     data, mask, mask_for_volume = input
-    #     return gaussian_smooth_dense(
-    #         data_dense=data, 
-    #         is_temporal=is_temporal, 
-    #         dim_space=dim_space, 
-    #         sigmas=sigmas, 
-    #         mask=mask, 
-    #         mask_for_volume=mask_for_volume, 
-    #         n_job=n_job
-    #     )
-    
     def _transform_labels_to_density(self, labels, method):
         self.test_value = True
         if method == self.labels_method_choices[0]:
@@ -757,64 +728,6 @@ class PlotterWidget(Container):
             )
         else:
             smoothedX, smoothedY = quantityX, quantityY
-        
-
-        # func_parallel = partial(
-        #     gaussian_smooth_dense,
-        #     is_temporal=False,
-        #     dim_space=3,
-        #     sigmas=self.blur_sigma_slider.value,
-        #     mask=blur_mask,
-        #     mask_for_volume=blur_mask_volume,
-        #     n_job=1
-        # )
-
-        # if self.quantityX_labels_choices_displayed:
-        #     if self.quantityX_labels_choices_combo.value == 'centroid_density':
-        #         quantityX = ...
-        #     elif self.quantityX_labels_choices_combo.value == 'volume density':
-        #         quantityX = ...
-        # else:
-        #     quantityX = self.quantityX_layer_combo.value.data
-
-
-        # func_parallel = partial(
-            # self._smooth_parallel_func,
-            # is_temporal=False,
-            # dim_space=3,
-            # sigmas=self.blur_sigma_slider.value,
-            # mask=blur_mask,
-            # mask_for_volume=blur_mask_volume,
-            # n_job=1
-        # )
-
-        # smoothedX, smoothedY = list(process_map(
-            # func_parallel,
-            # [self.quantityX_layer_combo.value.data, self.quantityY_layer_combo.value.data],
-            # max_workers=2,
-            # chunksize=1,
-            # desc="Smoothing quantities"
-        # ))
-
-        # smoothedX = gaussian_smooth_dense(
-        #     self.quantityX_layer_combo.value.data,
-        #     is_temporal=False,
-        #     dim_space=3,
-        #     sigmas=self.blur_sigma_slider.value,
-        #     mask=blur_mask,
-        #     mask_for_volume=blur_mask_volume,
-        #     n_job=1
-        # )
-
-        # smoothedY = gaussian_smooth_dense(
-        #     self.quantityY_layer_combo.value.data,
-        #     is_temporal=False,
-        #     dim_space=3,
-        #     sigmas=self.blur_sigma_slider.value,
-        #     mask=blur_mask,
-        #     mask_for_volume=blur_mask_volume,
-        #     n_job=1
-        # )
 
         return smoothedX, smoothedY
 
@@ -904,6 +817,7 @@ class PlotterWidget(Container):
             labelX = self.quantityX_labels_choice if self.quantityX_is_labels else self.quantityX_label
             labelY = self.quantityY_labels_choice if self.quantityY_is_labels else self.quantityY_label
             
+            t0 = time()
             # Get figure from HeatmapPlotter
             figure, _ = self.heatmap_plotter.get_heatmap_figure(
                 bins=(self.heatmap_binsX.value, self.heatmap_binsY.value),
@@ -915,7 +829,9 @@ class PlotterWidget(Container):
                 figsize=self.graphics_widget.figure.get_size_inches(),
                 label_X=labelX,
                 label_Y=labelY,
+                display_quadrants=self.display_quadrants.value
             )
+            print("Time to get figure:", time()-t0)
 
             # Display figure in graphics_widget -> Create a method "self.plot"
             self.plot_heatmap(figure)
@@ -956,16 +872,11 @@ class PlotterWidget(Container):
         self.graphics_widget.selector = SelectFromCollection(
             self.graphics_widget,
             self.graphics_widget.axes,
-            self.graphics_widget.pts,
             xys=self.graphics_widget.xys,
         )
 
         # generate dictionary mapping each prediction to its respective color
         # list cycling with  % introduced for all labels except hdbscan noise points (id = -1)
-        t0 = time()
-        # unique_preds = list(set(self.cluster_ids))
-        print('unique_preds time:', time()-t0)
-        t0 = time()
         cmap_dict = {
             int(prediction + 1): (
                 cmap[int(prediction) % len(cmap)]
@@ -978,7 +889,6 @@ class PlotterWidget(Container):
         cmap_dict[None] = [0, 0, 0, 0]
 
         napari_cmap = DirectLabelColormap(color_dict=cmap_dict)
-        print('cmap_dict time:', time()-t0)
 
         keep_selection = list(self._viewer.layers.selection)
 
@@ -1025,7 +935,7 @@ class PlotterWidget(Container):
 
         cluster_image = np.zeros(label_image.shape, dtype='uint8')
 
-        argwheres = np.argwhere(predictionlist>0)
+        argwheres = np.argwhere(predictionlist>0).flatten()
 
         for index in argwheres:
             prop = props[index]
@@ -1037,18 +947,8 @@ class PlotterWidget(Container):
     def generate_cluster_image_from_points(self, argwheres, predictionlist, shape):
 
         cluster_image = np.zeros(shape, dtype='uint8')
-
-        t0 = time()
-        argwheres = argwheres
-        print('argwhere time:', time()-t0)
-        # if sampling_indices is not None:
-        #     argwheres = argwheres[sampling_indices]
-
-        t0 = time()
         points_to_display = argwheres[predictionlist>0]
-        print('points_to_display time:', time()-t0)
 
-        t0 = time()
         cluster_image[tuple(points_to_display.T)] = predictionlist[predictionlist>0] + 1
-        print('cluster_image time:', time()-t0)
+        
         return cluster_image
