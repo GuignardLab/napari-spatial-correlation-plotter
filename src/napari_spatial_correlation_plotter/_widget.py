@@ -1,25 +1,29 @@
 import os
-import warnings
-import matplotlib.pyplot as plt
-import numpy as np
 from pathlib import Path as PathL
-from magicgui.widgets import Container, create_widget, EmptyWidget
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from time import time
+
+import matplotlib.pyplot as plt
+import napari
+import numpy as np
+from magicgui.widgets import Container, EmptyWidget, create_widget
+from matplotlib.backends.backend_qt5agg import \
+    FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import \
+    NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from matplotlib.path import Path
 from matplotlib.widgets import LassoSelector, RectangleSelector
-from napari.layers import Labels, Image, Layer
+from napari.layers import Image, Labels, Layer
+from napari.utils import DirectLabelColormap
+from napari_spatial_correlation_plotter._nice_colormap import get_nice_colormap
+from organoid.analysis.spatial_correlation._spatial_correlation_plotter import \
+    SpatialCorrelationPlotter
+from organoid.preprocessing._smoothing import \
+    gaussian_smooth_dense_two_arrays_gpu
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QGuiApplication, QIcon
 from skimage.measure import regionprops
-from organoid.analysis.spatial_correlation._spatial_correlation_plotter import SpatialCorrelationPlotter
-from napari_spatial_correlation_plotter._nice_colormap import get_nice_colormap
 from vispy.color import Color
-from napari.utils import DirectLabelColormap
-from pyngs.dense_smoothing_3d_gpu import gaussian_smooth_dense_two_arrays_gpu
-from time import time
-
 
 ICON_ROOT = PathL(__file__).parent / "icons"
 
@@ -556,7 +560,7 @@ class PlotterWidget(Container):
     def run(self):
         # Check if all necessary layers are specified
         if self.quantityX_layer_combo.value is None:
-            warnings.warn("Please specify quantityX_layer")
+            napari.utils.notifications.show_warning("Please specify quantityX_layer")
             return
         else:
             self.quantityX = self.quantityX_layer_combo.value.data
@@ -569,7 +573,7 @@ class PlotterWidget(Container):
             self.quantityX_labels_choice = self.quantityX_labels_choices_combo.value
 
         if self.quantityY_layer_combo.value is None:
-            warnings.warn("Please specify quantityY_layer")
+            napari.utils.notifications.show_warning("Please specify quantityY_layer")
             return
         else:
             self.quantityY = self.quantityY_layer_combo.value.data
