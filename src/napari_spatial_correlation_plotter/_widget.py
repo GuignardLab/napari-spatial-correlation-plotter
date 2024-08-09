@@ -16,9 +16,9 @@ from matplotlib.widgets import LassoSelector, RectangleSelector
 from napari.layers import Image, Labels, Layer
 from napari.utils import DirectLabelColormap
 from napari_spatial_correlation_plotter._nice_colormap import get_nice_colormap
-from organoid.analysis.spatial_correlation._spatial_correlation_plotter import \
+from tapenade.analysis.spatial_correlation._spatial_correlation_plotter import \
     SpatialCorrelationPlotter
-from organoid.preprocessing._smoothing import \
+from tapenade.preprocessing._smoothing import \
     gaussian_smooth_dense_two_arrays_gpu
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QGuiApplication, QIcon
@@ -428,11 +428,12 @@ class PlotterWidget(Container):
 
             self.show_linear_fit_checkbox.changed.connect(self.parameters_changed)
 
-            self.normalize_quantities_checkbox = create_widget(
-                annotation=bool, label="Normalize quantities",
-            )
+            #! normalize is currently broken with manual selection
+            # self.normalize_quantities_checkbox = create_widget(
+            #     annotation=bool, label="Normalize quantities",
+            # )
 
-            self.normalize_quantities_checkbox.changed.connect(self.parameters_changed)
+            # self.normalize_quantities_checkbox.changed.connect(self.parameters_changed)
 
             self.display_quadrants = create_widget(
                 annotation=bool, label="Display quadrants",
@@ -450,7 +451,7 @@ class PlotterWidget(Container):
             )
             self.options_container2 = Container(
                 widgets=[
-                    self.normalize_quantities_checkbox,
+                    # self.normalize_quantities_checkbox, #! normalize is currently broken with manual selection
                     self.display_quadrants,
                 ],
                 labels=False,
@@ -723,7 +724,7 @@ class PlotterWidget(Container):
         if mask is None or all([elem is None for elem in masks_volume]):
             masks_volume = None
 
-        if self.blur_sigma_slider.value >= 1:
+        if self.blur_sigma_slider.value > 0:
             smoothedX, smoothedY = gaussian_smooth_dense_two_arrays_gpu(
                 datas=[quantityX, quantityY],
                 sigmas=self.blur_sigma_slider.value,
@@ -764,7 +765,8 @@ class PlotterWidget(Container):
             bins=(self.heatmap_binsX.value, self.heatmap_binsY.value),
             show_individual_cells=self.show_individual_cells_checkbox.value,
             show_linear_fit=self.show_linear_fit_checkbox.value,
-            normalize_quantities=self.normalize_quantities_checkbox.value,
+            # normalize_quantities=self.normalize_quantities_checkbox.value,
+            normalize_quantities=False, #! normalize is currently broken with manual selection 
             percentiles_X=self.percentilesX.value,
             percentiles_Y=self.percentilesY.value,
             figsize=self.graphics_widget.figure.get_size_inches(),
@@ -827,7 +829,8 @@ class PlotterWidget(Container):
                 bins=(self.heatmap_binsX.value, self.heatmap_binsY.value),
                 show_individual_cells=self.show_individual_cells_checkbox.value,
                 show_linear_fit=self.show_linear_fit_checkbox.value,
-                normalize_quantities=self.normalize_quantities_checkbox.value,
+                # normalize_quantities=self.normalize_quantities_checkbox.value, #! normalize is currently broken with manual selection
+                normalize_quantities=False,
                 percentiles_X=self.percentilesX.value,
                 percentiles_Y=self.percentilesY.value,
                 figsize=self.graphics_widget.figure.get_size_inches(),
