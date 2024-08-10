@@ -16,10 +16,10 @@ from matplotlib.widgets import LassoSelector, RectangleSelector
 from napari.layers import Image, Labels, Layer
 from napari.utils import DirectLabelColormap
 from napari_spatial_correlation_plotter._nice_colormap import get_nice_colormap
-from tapenade.analysis.spatial_correlation._spatial_correlation_plotter import \
+from tapenade.analysis.spatial_correlation import \
     SpatialCorrelationPlotter
-from tapenade.preprocessing._smoothing import \
-    gaussian_smooth_dense_two_arrays_gpu
+from tapenade.preprocessing import \
+    masked_gaussian_smooth_dense_two_arrays_gpu
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QGuiApplication, QIcon
 from skimage.measure import regionprops
@@ -725,7 +725,7 @@ class PlotterWidget(Container):
             masks_volume = None
 
         if self.blur_sigma_slider.value > 0:
-            smoothedX, smoothedY = gaussian_smooth_dense_two_arrays_gpu(
+            smoothedX, smoothedY = masked_gaussian_smooth_dense_two_arrays_gpu(
                 datas=[quantityX, quantityY],
                 sigmas=self.blur_sigma_slider.value,
                 mask=mask,
