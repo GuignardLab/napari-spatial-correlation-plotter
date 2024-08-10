@@ -1,4 +1,4 @@
-# napari-spatial-correlation-plotter
+# :herb: napari-spatial-correlation-plotter
 
 [![License MIT](https://img.shields.io/pypi/l/napari-spatial-correlation-plotter.svg?color=green)](https://github.com/jules-vanaret/napari-spatial-correlation-plotter/raw/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/napari-spatial-correlation-plotter.svg?color=green)](https://pypi.org/project/napari-spatial-correlation-plotter)
@@ -7,32 +7,38 @@
 [![codecov](https://codecov.io/gh/jules-vanaret/napari-spatial-correlation-plotter/branch/main/graph/badge.svg)](https://codecov.io/gh/jules-vanaret/napari-spatial-correlation-plotter)
 [![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/napari-spatial-correlation-plotter)](https://napari-hub.org/plugins/napari-spatial-correlation-plotter)
 
-A simple plugin to use FooBar segmentation within napari
+<img src="https://github.com/GuignardLab/tapenade/blob/Packaging/imgs/tapenade3.png" width="100">
 
-----------------------------------
+A plugin to dynamically interact with the spatial correlation heatmap obtained by comparing two continuous fields of biophysical properties in 3D tissues.
 
-This [napari] plugin was generated with [Cookiecutter] using [@napari]'s [cookiecutter-napari-plugin] template.
+`napari-spatial-correlation-plotter` is a [napari] plugin that is part of the [Tapenade](https://github.com/GuignardLab/tapenade) project. Tapenade is a tool for the analysis of dense 3D tissues acquired with deep imaging microscopy. It is designed to be user-friendly and to provide a comprehensive analysis of the data.
 
-<!--
-Don't miss the full getting started guide to set up your new package:
-https://github.com/napari/cookiecutter-napari-plugin#getting-started
+If you use this plugin for your research, please [cite us](https://github.com/GuignardLab/tapenade/blob/main/README.md#how-to-cite).
 
-and review the napari docs for plugin developers:
-https://napari.org/stable/plugins/index.html
--->
+## Overview
+
+While working with large and dense 3D and 3D+time gastruloid datasets, we found that being able to visualise and interact with the data dynamically greatly helped processing it.
+During the pre-processing stage, dynamical exploration and interaction led to faster tuning of the parameters by allowing direct visual feedback, and gave key biophysical insight during the analysis stage.
+
+This plugins allows the user to analyse the spatial correlations of two 3D fields loaded in Napari (e.g two fluorescent markers). The user can dynamically vary the analysis length scale, which corresponds to the standard deviation of the Gaussian kernel used for smoothing the 3D fields. 
+If a layer of segmented nuclei instances is additionally specified, the histogram is constructed by binning values at the nuclei level (each point corresponds to an individual nucleus). Otherwise, individual voxel values are used.
+The user can dynamically interact with the correlation heatmap by manually selecting a region in the plot. The corresponding cells (or voxels) that contributed to the region's statistics will be displayed in 3D on an independant Napari layer for the user to interact with and gain biological insight.
 
 ## Installation
 
-You can install `napari-spatial-correlation-plotter` via [pip]:
+The plugin obviously requires [napari] to run. If you don't have it yet, follow the instructions [here](https://napari.org/stable/tutorials/fundamentals/installation.html).
+
+The simplest way to install `napari-spatial-correlation-plotter` is via the [napari] plugin manager. Open Napari, go to `Plugins > Install/Uninstall Packages...` and search for `napari-spatial-correlation-plotter`. Click on the install button and you are ready to go!
+
+You can also install `napari-spatial-correlation-plotter` via [pip]:
 
     pip install napari-spatial-correlation-plotter
-
-
 
 To install latest development version :
 
     pip install git+https://github.com/jules-vanaret/napari-spatial-correlation-plotter.git
 
+## Usage
 
 ## Contributing
 
@@ -47,6 +53,10 @@ Distributed under the terms of the [MIT] license,
 ## Issues
 
 If you encounter any problems, please [file an issue] along with a detailed description.
+
+----------------------------------
+
+This [napari] plugin was generated with [Cookiecutter] using [@napari]'s [cookiecutter-napari-plugin] template.
 
 [napari]: https://github.com/napari/napari
 [Cookiecutter]: https://github.com/audreyr/cookiecutter
