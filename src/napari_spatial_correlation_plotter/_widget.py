@@ -483,7 +483,7 @@ class PlotterWidget(Container):
             self.heatmap_binsX = create_widget(
                 widget_type="IntSlider",
                 label="X",
-                value=20,
+                value=40,
                 options={"min": 2, "max": 100, "tracking": True},
             )
 
@@ -492,7 +492,7 @@ class PlotterWidget(Container):
             self.heatmap_binsY = create_widget(
                 widget_type="IntSlider",
                 label="Y",
-                value=20,
+                value=40,
                 options={"min": 2, "max": 100, "tracking": True},
             )
 
@@ -938,7 +938,7 @@ class PlotterWidget(Container):
         return [
             layer
             for layer in self._viewer.layers
-            if isinstance(layer, Image) or isinstance(layer, Labels)
+            if isinstance(layer, Image | Labels)
         ]
 
     def _bool_layers_filter(self, wdg):
