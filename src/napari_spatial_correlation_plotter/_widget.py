@@ -712,6 +712,10 @@ class PlotterWidget(Container):
             )
         else:
             self.quantityX_smoothed_layer.data = blurredX
+            self.quantityX_smoothed_layer.contrast_limits = (
+                blurredX.min(), blurredX.max()
+            )
+            self.quantityX_smoothed_layer.refresh()
 
         if (
             self.quantityY_smoothed_layer is None
@@ -722,6 +726,10 @@ class PlotterWidget(Container):
             )
         else:
             self.quantityY_smoothed_layer.data = blurredY
+            self.quantityY_smoothed_layer.contrast_limits = (
+                blurredY.min(), blurredY.max()
+            )
+            self.quantityY_smoothed_layer.refresh()
 
     def _update_quantities_labels_choices(self, event):
 
