@@ -11,9 +11,9 @@
 
 A plugin to dynamically interact with the spatial correlation heatmap obtained by comparing two continuous fields of biophysical properties in 3D tissues.
 
-`napari-spatial-correlation-plotter` is a [napari] plugin that is part of the [Tapenade](https://github.com/GuignardLab/tapenade) project. Tapenade is a tool for the analysis of dense 3D tissues acquired with deep imaging microscopy. It is designed to be user-friendly and to provide a comprehensive analysis of the data.
-
 If you use this plugin for your research, please [cite us](https://github.com/GuignardLab/tapenade/blob/main/README.md#how-to-cite).
+
+`napari-spatial-correlation-plotter` is a [napari] plugin that is part of the [Tapenade](https://github.com/GuignardLab/tapenade) project. Tapenade is a tool for the analysis of dense 3D tissues acquired with deep imaging microscopy. It is designed to be user-friendly and to provide a comprehensive analysis of the data.
 
 ## Overview
 
@@ -61,7 +61,15 @@ Steps:
 11. You can click on the `Save the figure` button to save the current plot (many formats are available, including .png, .svg, .jpeg).
 12. You can interact with the plot by manually drawing a region of interest directly on the plot to automatically select and display the corresponding cells in 3D on an independant Napari Labels layer `clustered labels`. By using a left click, you can draw an arbitrary shape. By using a right click, you can draw a rectangle. If `Shift` is pressed while drawing, several groups of cells can appear on the `clustered labels` layer, each with a different color.
 13. To trigger the grid view like in the example image, you can click on the `Toggle grid mode` button. This will display all layers in a grid view. By right clicking the button, you can parametrize the grid view (e.g number of columns, number of rows, etc).
-14. You can switch between 2D and 3D view at all time by clicking on the `Toggle 2D/3D view` button (it resembles a square when in 2D mode, or a cube when in 3D mode). 
+14. You can switch between 2D and 3D view at all time by clicking on the `Toggle 2D/3D view` button (it resembles a square when in 2D mode, or a cube when in 3D mode).
+
+## Acknowledgements
+
+The "napari-clusters-plotter" plugin [1] heavily inspired this plugin, most notably the `SelectFromCollection`, `MplCanvas` and `FigureToolbar` classes. The `PlotterWidget` class has been modified for the specific use case of this plugin, but the core functionalites have been adapted directly.
+napari-clusters-plotter source code is available [here](https://github.com/BiAPoL/napari-clusters-plotter/tree/main).
+
+
+[1] Zigutyte, L., Savill, R., Müller, J., Zoccoler, M., Wagner, T., & Haase, R. (2023). napari-clusters-plotter. Zenodo. https://doi.org/10.5281/zenodo.5884657
 
 ## Contributing
 

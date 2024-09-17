@@ -28,6 +28,19 @@ from napari_spatial_correlation_plotter._nice_colormap import get_nice_colormap
 
 ICON_ROOT = PathL(__file__).parent / "icons"
 
+"""
+This widget takes HEAVY inspiration from the napari-clusters-plotter plugin [1],
+most notably the SelectFromCollection, MplCanvas and FigureToolbar classes.
+The PlotterWidget class has been modified for the specific use case of this
+plugin, but the core functionalites have been adapted directly.
+
+napari-clusters-plotter source code is available at
+https://github.com/BiAPoL/napari-clusters-plotter/tree/main
+
+
+[1] Zigutyte, L., Savill, R., Müller, J., Zoccoler, M., Wagner, T., & Haase, R. (2023).
+napari-clusters-plotter. Zenodo. https://doi.org/10.5281/zenodo.5884657
+"""
 
 # TODO:
 # - add log scale to heatmap colors
