@@ -1,3 +1,7 @@
+"""
+Copyright (c) 2022, DFG Cluster of Excellence "Physics of Life" TU Dresden: Robert Haase, Laura Zigutyte, Marcello Zoccoler, Ryan Savill, Johannes Müller and Max Planck Institute of Molecular Physiology Dortmund: Thorsten Wagner
+"""
+
 def get_nice_colormap():
     colours_w_old_colors = [
         "#ff7f0e",
