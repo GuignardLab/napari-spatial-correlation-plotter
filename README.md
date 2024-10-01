@@ -7,7 +7,7 @@
 [![codecov](https://codecov.io/gh/jules-vanaret/napari-spatial-correlation-plotter/branch/main/graph/badge.svg)](https://codecov.io/gh/jules-vanaret/napari-spatial-correlation-plotter)
 [![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/napari-spatial-correlation-plotter)](https://napari-hub.org/plugins/napari-spatial-correlation-plotter)
 
-<img src="https://github.com/GuignardLab/tapenade/blob/Packaging/imgs/tapenade3.png" width="100">
+<img src="https://github.com/GuignardLab/tapenade/blob/main/imgs/tapenade3.png" width="100">
 
 A plugin to dynamically interact with the spatial correlation heatmap obtained by comparing two continuous fields of biophysical properties in 3D tissues.
 
