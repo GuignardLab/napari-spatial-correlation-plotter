@@ -1,4 +1,8 @@
 """
+Copyright (c) 2024 Jules Vanaret
+
+The SelectFromCollection, MplCanvas, FigureToolbar classes, and parts of
+the PlotterWidget class are licensed under
 Copyright (c) 2022, DFG Cluster of Excellence "Physics of Life" TU Dresden: Robert Haase, Laura Zigutyte, Marcello Zoccoler, Ryan Savill, Johannes Müller and Max Planck Institute of Molecular Physiology Dortmund: Thorsten Wagner
 """
 import os
