@@ -17,6 +17,8 @@ If you use this plugin for your research, please [cite us](https://github.com/Gu
 
 ## Overview
 
+<img src="imgs/napari_correlation_demo.gif">
+
 While working with large and dense 3D and 3D+time gastruloid datasets, we found that being able to visualise and interact with the data dynamically greatly helped processing it.
 During the pre-processing stage, dynamical exploration and interaction led to faster tuning of the parameters by allowing direct visual feedback, and gave key biophysical insight during the analysis stage.
 
