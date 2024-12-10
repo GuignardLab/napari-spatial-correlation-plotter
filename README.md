@@ -65,6 +65,22 @@ Steps:
 13. To trigger the grid view like in the example image, you can click on the `Toggle grid mode` button. This will display all layers in a grid view. By right clicking the button, you can parametrize the grid view (e.g number of columns, number of rows, etc).
 14. You can switch between 2D and 3D view at all time by clicking on the `Toggle 2D/3D view` button (it resembles a square when in 2D mode, or a cube when in 3D mode).
 
+## Demo dataset
+
+A demo dataset is available [here](https://amubox.univ-amu.fr/s/igYycspAiXankWF).
+
+### Content
+
+This test dataset is composed of five 3D images.
+ - `bra isotropized.tif`, `dapi isotropized.tif`, and `ecad isotropized.tif` correspond to 3 biological signals images, respectively Brachyury, Dapi, and E-Cadherin.
+ - `mask.tif` is a binary mask that defines the inside/outside of the sample.
+ - `labels.tif` is the nuclei segmentation performed on the Dapi channel with our custom Stardist3D model.
+
+### How to use
+
+ - Load the images from the folder (either drag and drop, or "File>Open file(s)").
+ - Follow instructions from the plugin repository to test the plugin.
+
 ## Acknowledgements
 
 The "napari-clusters-plotter" plugin [1] heavily inspired this plugin, most notably the `SelectFromCollection`, `MplCanvas` and `FigureToolbar` classes. The `PlotterWidget` class has been modified for the specific use case of this plugin, but the core functionalites have been adapted directly.
