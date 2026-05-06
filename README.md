@@ -3,8 +3,6 @@
 [![License MIT](https://img.shields.io/pypi/l/napari-spatial-correlation-plotter.svg?color=green)](https://github.com/jules-vanaret/napari-spatial-correlation-plotter/raw/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/napari-spatial-correlation-plotter.svg?color=green)](https://pypi.org/project/napari-spatial-correlation-plotter)
 [![Python Version](https://img.shields.io/pypi/pyversions/napari-spatial-correlation-plotter.svg?color=green)](https://python.org)
-[![tests](https://github.com/jules-vanaret/napari-spatial-correlation-plotter/workflows/tests/badge.svg)](https://github.com/jules-vanaret/napari-spatial-correlation-plotter/actions)
-[![codecov](https://codecov.io/gh/jules-vanaret/napari-spatial-correlation-plotter/branch/main/graph/badge.svg)](https://codecov.io/gh/jules-vanaret/napari-spatial-correlation-plotter)
 [![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/napari-spatial-correlation-plotter)](https://napari-hub.org/plugins/napari-spatial-correlation-plotter)
 
 <img src="https://github.com/GuignardLab/tapenade/blob/main/imgs/tapenade3.png" width="100">
@@ -96,11 +94,6 @@ napari-clusters-plotter source code is available [here](https://github.com/BiAPo
 
 [1] Zigutyte, L., Savill, R., Müller, J., Zoccoler, M., Wagner, T., & Haase, R. (2023). napari-clusters-plotter. Zenodo. https://doi.org/10.5281/zenodo.5884657
 
-## Contributing
-
-Contributions are very welcome. Tests can be run with [tox], please ensure
-the coverage at least stays the same before you submit a pull request.
-
 ## License
 
 Distributed under the terms of the [MIT] license,
@@ -128,6 +121,5 @@ This [napari] plugin was generated with [Cookiecutter] using [@napari]'s [cookie
 [file an issue]: https://github.com/jules-vanaret/napari-spatial-correlation-plotter/issues
 
 [napari]: https://github.com/napari/napari
-[tox]: https://tox.readthedocs.io/en/latest/
 [pip]: https://pypi.org/project/pip/
 [PyPI]: https://pypi.org/
