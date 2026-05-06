@@ -81,6 +81,13 @@ This test dataset is composed of five 3D images.
  - Load the images from the folder (either drag and drop, or "File>Open file(s)").
  - Follow instructions from the plugin repository to test the plugin.
 
+## How to cite
+
+If you use this plugin for your research, please cite us using the following reference:
+
+- Jules Vanaret, Alice Gros, Valentin Dunsing-Eichenauer, Agathe Rostan, Philippe Roudot, Pierre-François Lenne, Léo Guignard, Sham Tlili (2025) <b>A quantitative pipeline for whole-mount deep imaging and analysis of multi-layered organoids across scales</b>. eLife 14:RP107154 ; doi:https://doi.org/10.7554/eLife.107154.2
+
+
 ## Acknowledgements
 
 The "napari-clusters-plotter" plugin [1] heavily inspired this plugin, most notably the `SelectFromCollection`, `MplCanvas` and `FigureToolbar` classes. The `PlotterWidget` class has been modified for the specific use case of this plugin, but the core functionalites have been adapted directly.
