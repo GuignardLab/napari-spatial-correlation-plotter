@@ -30,6 +30,8 @@ The user can dynamically interact with the correlation heatmap by manually selec
 
 The plugin obviously requires [napari] to run. If you don't have it yet, follow the instructions [here](https://napari.org/stable/tutorials/fundamentals/installation.html).
 
+Compatible with Python 3.9 to 3.13 (recommended: 3.12).
+
 The simplest way to install `napari-spatial-correlation-plotter` is via the [napari] plugin manager. Open Napari, go to `Plugins > Install/Uninstall Packages...` and search for `napari-spatial-correlation-plotter`. Click on the install button and you are ready to go!
 
 You can also install `napari-spatial-correlation-plotter` via [pip]:
